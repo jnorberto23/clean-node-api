@@ -1,7 +1,7 @@
 import {
   AuthenticationModel,
   HashComparer,
-  TokenGenerator,
+  Encrypter,
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
   Authentication
@@ -10,27 +10,27 @@ import {
 export class DbAuthentication implements Authentication {
   private readonly loadAcountByEmailRepository: LoadAccountByEmailRepository
   private readonly hashComparer: HashComparer
-  private readonly tokenGenerator: TokenGenerator
+  private readonly encrypter: Encrypter
   private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   constructor (
     loadAcoountByEmailRepository: LoadAccountByEmailRepository,
     hashComparer: HashComparer,
-    tokenGenerator: TokenGenerator,
+    encrypter: Encrypter,
     updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {
     this.loadAcountByEmailRepository = loadAcoountByEmailRepository
     this.hashComparer = hashComparer
-    this.tokenGenerator = tokenGenerator
+    this.encrypter = encrypter
     this.updateAccessTokenRepository = updateAccessTokenRepository
   }
 
   async auth (authentication: AuthenticationModel): Promise<string> {
-    const account = await this.loadAcountByEmailRepository.load(authentication.email)
+    const account = await this.loadAcountByEmailRepository.loadByEmail(authentication.email)
     if (account) {
       const isValid = await this.hashComparer.compare(authentication.password, account.password)
       if (isValid) {
-        const accessToken = await this.tokenGenerator.generate(account.id)
-        await this.updateAccessTokenRepository.update(account.id, accessToken)
+        const accessToken = await this.encrypter.encrypt(account.id)
+        await this.updateAccessTokenRepository.updateAccessToken(account.id, accessToken)
         return accessToken
       }
     }
