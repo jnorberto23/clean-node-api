@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helpers'
 import { AccountMongoRepository } from './account'
 
@@ -12,7 +12,7 @@ describe('Account Mongo Repository', () => {
     await MongoHelper.disconnect()
   })
   beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('account')
+    accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
 
@@ -51,5 +51,18 @@ describe('Account Mongo Repository', () => {
     const sut = makeSut()
     const account = await sut.loadByEmail('other_email@email.com')
     expect(account).toBeFalsy()
+  })
+  test('Should update the account accessToken on updateAccessToken sucess', async () => {
+    const sut = makeSut()
+    const res = await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@email.com',
+      password: 'any_password'
+    })
+    const fakeAccount = res
+    await sut.updateAccessToken(fakeAccount.insertedId, 'any_token')
+    const account = await accountCollection.findOne({ _id: fakeAccount.insertedId })
+    expect(account).toBeTruthy()
+    expect(account.accessToken).toBe('any_token')
   })
 })
