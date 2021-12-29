@@ -1,7 +1,7 @@
 import { SignUpController } from './signup-controller'
-import { MissingParamError, ServerError } from '../../errors'
+import { EmailInUseError, MissingParamError, ServerError } from '../../errors'
 import { AccountModel, AddAccount, AddAccountModel, Authentication, AuthenticationModel, HttpRequest, Validation } from './signup-protocols-controller'
-import { badRequest, serverError } from '../../helpers/http/http-helper'
+import { badRequest, forbidden, serverError } from '../../helpers/http/http-helper'
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
@@ -89,6 +89,12 @@ describe('Signup Controller', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual({ accessToken: 'any_token' })
+  })
+  test('Should return 403 if AddAccount returns null', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })
   test('Should call Validation with correct values', async () => {
     const { sut, validationStub } = makeSut()
