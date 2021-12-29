@@ -22,7 +22,6 @@ export class SignUpController implements Controller {
         email,
         password
       })
-      account.name = 'test'
       return ok(account)
     } catch (error) {
       return serverError(error)
