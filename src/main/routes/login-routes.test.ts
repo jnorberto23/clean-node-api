@@ -14,7 +14,7 @@ describe('Login Routes Middleware', () => {
     await MongoHelper.disconnect()
   })
   beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('account')
+    accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
   describe('Post /signup', () => {
@@ -45,6 +45,15 @@ describe('Login Routes Middleware', () => {
           password: '123'
         })
         .expect(200)
+    })
+    test('should return 401 on login', async () => {
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'joao@email.com',
+          password: '123'
+        })
+        .expect(401)
     })
   })
 })
