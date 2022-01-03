@@ -2,13 +2,26 @@ import { sign } from 'jsonwebtoken'
 import { Collection } from 'mongodb'
 import env from '../config/env'
 import request from 'supertest'
-import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helpers'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helpers'
 import app from '../config/app'
 
 let surveyCollection: Collection
 let accountCollection: Collection
 
 describe('Survey Routes', () => {
+  const makeAccessToken = async (): Promise<string> => {
+    const res = await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@email.com',
+      password: 'any_password',
+      role: 'admin'
+    })
+
+    const id = res.insertedId
+    const accessToken = sign({ id }, env.jwtSecret)
+    await accountCollection.updateOne({ _id: id }, { $set: { accessToken } })
+    return accessToken
+  }
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
@@ -21,7 +34,7 @@ describe('Survey Routes', () => {
     accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
-  describe('Post /survey', () => {
+  describe('Post /surveys', () => {
     test('Should return 403 on add survey without accessToken', async () => {
       await request(app)
         .post('/api/surveys')
@@ -37,17 +50,7 @@ describe('Survey Routes', () => {
         .expect(403)
     })
     test('Should return 204 on add survey with valid accessToken', async () => {
-      const res = await accountCollection.insertOne({
-        name: 'any_name',
-        email: 'any_email@email.com',
-        password: 'any_password',
-        role: 'admin'
-      })
-
-      const id = res.insertedId
-      const accessToken = sign({ id }, env.jwtSecret)
-      await accountCollection.updateOne({ _id: id }, { $set: { accessToken } })
-
+      const accessToken = await makeAccessToken()
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -60,6 +63,20 @@ describe('Survey Routes', () => {
           { answer: 'Answer 2' }
           ]
         })
+        .expect(204)
+    })
+  })
+  describe('Get /surveys', () => {
+    test('Should return 403 on load surveys without accessToken', async () => {
+      await request(app)
+        .get('/api/surveys')
+        .expect(403)
+    })
+    test('Should return 204 on load surveys with valid accessToken', async () => {
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
         .expect(204)
     })
   })
