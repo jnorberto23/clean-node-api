@@ -13,7 +13,8 @@ describe('Survey Routes', () => {
     const res = await accountCollection.insertOne({
       name: 'any_name',
       email: 'any_email@email.com',
-      password: 'any_password'
+      password: 'any_password',
+      role: 'admin'
     })
 
     const id = res.insertedId
