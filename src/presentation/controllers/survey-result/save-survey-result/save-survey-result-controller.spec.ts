@@ -1,5 +1,5 @@
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { HttpRequest, LoadSurveyById, SurveyModel, forbidden, InvalidParamError, serverError, SurveyResultModel, SaveSurveyResult, SaveSurveyResultModel, ok } from './save-survey-result-protocols-controller'
+import { HttpRequest, LoadSurveyById, SurveyModel, forbidden, InvalidParamError, serverError, SurveyResultModel, SaveSurveyResult, SaveSurveyResultParams, ok } from './save-survey-result-protocols-controller'
 import MockDate from 'mockdate'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -39,7 +39,7 @@ const makeLoadSurveyById = (): LoadSurveyById => {
 
 const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (data: SaveSurveyResultModel): Promise<SurveyResultModel> {
+    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
       return await new Promise(resolve => resolve(makeFakeSurveyResult()))
     }
   }
