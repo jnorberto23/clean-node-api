@@ -1,5 +1,5 @@
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { HttpRequest, LoadSurveyById, SurveyModel, forbidden, InvalidParamError, serverError, SurveyResultModel, SaveSurveyResult, SaveSurveyResultModel } from './save-survey-result-protocols-controller'
+import { HttpRequest, LoadSurveyById, SurveyModel, forbidden, InvalidParamError, serverError, SurveyResultModel, SaveSurveyResult, SaveSurveyResultModel, ok } from './save-survey-result-protocols-controller'
 import MockDate from 'mockdate'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -110,5 +110,10 @@ describe('SaveSurveyResult Controller', () => {
     jest.spyOn(saveSurveyResultStub, 'save').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const httpResponse = await sut.handle({})
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+  test('should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok(makeFakeSurveyResult()))
   })
 })
