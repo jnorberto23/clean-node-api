@@ -7,7 +7,7 @@ import { SaveSurveyResult, SaveSurveyResultParams, SurveyResultModel } from '../
 export const mockAddSurvey = (): AddSurvey => {
   class AddSurveyStub implements AddSurvey {
     async add (data?: AddSurveyParams): Promise<void> {
-      return await new Promise(resolve => resolve())
+      return await Promise.resolve()
     }
   }
   return new AddSurveyStub()
@@ -15,7 +15,7 @@ export const mockAddSurvey = (): AddSurvey => {
 export const makeLoadSurveys = (): LoadSurveys => {
   class LoadSurveysStub implements LoadSurveys {
     async load (): Promise<SurveyModel[]> {
-      return await new Promise(resolve => resolve(mockSurveyModels()))
+      return await Promise.resolve(mockSurveyModels())
     }
   }
   return new LoadSurveysStub()
@@ -23,7 +23,7 @@ export const makeLoadSurveys = (): LoadSurveys => {
 export const mockSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
     async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return await new Promise(resolve => resolve(mockSurveyResultModel()))
+      return await Promise.resolve(mockSurveyResultModel())
     }
   }
   return new SaveSurveyResultStub()
