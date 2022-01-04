@@ -1,6 +1,7 @@
 import { LogErrorRepository } from '@/data/protocols/db/log/log-error-repository'
 import { serverError } from '@/presentation/helpers/http/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { mockLogErrorRepository } from '@/data/test'
 import { LogControllerDecorator } from './log-controller-decorator'
 
 type SutTypes ={
@@ -9,14 +10,6 @@ type SutTypes ={
   logErrorRepositoryStub: LogErrorRepository
 }
 
-const makeLogErrorRepository = (): LogErrorRepository => {
-  class LogErrorRepositoryStub implements LogErrorRepository {
-    async logError (stack: string): Promise<void> {
-      return await new Promise(resolve => resolve())
-    }
-  }
-  return new LogErrorRepositoryStub()
-}
 const makeFakeServerError = (): HttpResponse => {
   const fakeError = new Error()
   fakeError.stack = 'any_stack'
@@ -41,7 +34,7 @@ const makeController = (): Controller => {
           name: 'João'
         }
       }
-      return await new Promise(resolve => resolve(httpResponse))
+      return await Promise.resolve(httpResponse)
     }
   }
   return new ControllerStub()
@@ -49,7 +42,7 @@ const makeController = (): Controller => {
 
 const makeSut = (): SutTypes => {
   const controllerStub = makeController()
-  const logErrorRepositoryStub = makeLogErrorRepository()
+  const logErrorRepositoryStub = mockLogErrorRepository()
   const sut = new LogControllerDecorator(controllerStub, logErrorRepositoryStub)
 
   return {
@@ -80,7 +73,7 @@ describe('LogController Decorator', () => {
   test('should call LogErrorRepository with correct error if controlelr returns a server error', async () => {
     const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
     const logSpy = jest.spyOn(logErrorRepositoryStub, 'logError')
-    jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(new Promise((resolve) => resolve(makeFakeServerError())))
+    jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(Promise.resolve(makeFakeServerError()))
     await sut.handle(makeFakeRequest())
     expect(logSpy).toHaveBeenCalledWith('any_stack')
   })
