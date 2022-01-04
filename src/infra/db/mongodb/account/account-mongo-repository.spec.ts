@@ -1,4 +1,5 @@
 import { Collection } from 'mongodb'
+import { mockAccountParams } from '@/domain/test'
 import { MongoHelper } from '../helpers/mongo-helpers'
 import { AccountMongoRepository } from './account-mongo-repository'
 
@@ -23,11 +24,7 @@ describe('Account Mongo Repository', () => {
   describe('Add', () => {
     test('Should return an account on add success', async () => {
       const sut = makeSut()
-      const account = await sut.add({
-        name: 'any_name',
-        email: 'any_email@email.com',
-        password: 'any_password'
-      })
+      const account = await sut.add(mockAccountParams())
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe('any_name')
@@ -39,11 +36,7 @@ describe('Account Mongo Repository', () => {
   describe('LoadByEmail', () => {
     test('Should return an account on loadByEmail success', async () => {
       const sut = makeSut()
-      await accountCollection.insertOne({
-        name: 'any_name',
-        email: 'any_email@email.com',
-        password: 'any_password'
-      })
+      await accountCollection.insertOne(mockAccountParams())
       const account = await sut.loadByEmail('any_email@email.com')
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
