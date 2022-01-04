@@ -1,4 +1,3 @@
-
 import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository'
 import { LoadAccountByEmailRepository } from '@/data/protocols/db/account/load-account-by-email-repository'
 import { LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
@@ -26,10 +25,9 @@ LoadAccountByTokenRepository {
 
   async updateAccessToken (id: any, token: string): Promise<void> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const _id = id
 
     await accountCollection.findOneAndUpdate(
-      { _id },
+      { _id: id },
       { $set: { accessToken: token } }
     )
   }
