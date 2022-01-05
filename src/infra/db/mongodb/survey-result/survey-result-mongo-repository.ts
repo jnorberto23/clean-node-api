@@ -1,7 +1,8 @@
 import { ObjectId } from 'mongodb'
-import { SaveSurveyResultRepository, SurveyResultModel } from '../../../../data/usecases/survey-result/save-survey-result/db-save-survey-result-protocols'
+import { SaveSurveyResultRepository, SurveyResultModel } from '@/data/usecases/survey-result/save-survey-result/db-save-survey-result-protocols'
 import { QueryBuilder } from '../helpers'
 import { MongoHelper } from '../helpers/mongo-helpers'
+import round from 'mongo-round'
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
   async save (data: any): Promise<SurveyResultModel> {
@@ -169,8 +170,8 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
         answer: {
           answer: '$_id.answer',
           image: '$_id.image',
-          count: '$count',
-          percent: '$percent',
+          count: round('$count'),
+          percent: round('$percent'),
           isCurrentAccountAnswer: {
             $eq: ['$isCurrentAccountAnswerCount', 1]
           }
