@@ -1,6 +1,8 @@
-import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result/save-survey-result-repository copy'
-import { mockLoadSurveyResultRepository } from '@/data/test'
-import { DbLoadSurveyResult } from './db-load-survey-result'
+import {
+  LoadSurveyResultRepository,
+  DbLoadSurveyResult,
+  mockLoadSurveyResultRepository
+} from './db-save-survey-result-protocols'
 
 type SutTypes = {
   sut: DbLoadSurveyResult
