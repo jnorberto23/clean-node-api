@@ -1,12 +1,8 @@
-import { SurveyResultModel, SaveSurveyResultRepository } from './db-save-survey-result-protocols'
+import { SaveSurveyResultRepository } from './db-save-survey-result-protocols'
 import { DbSaveSurveyResult } from './db-save-survey-result'
-import { mockSurveyResultParams, throwError } from '@/domain/test'
+import { mockSurveyResultModel, mockSurveyResultParams, throwError } from '@/domain/test'
 import MockDate from 'mockdate'
-import { mockSaveSurveyResultRepository } from '@/data/test'
-
-const mockSurveyResultModel = (): SurveyResultModel => Object.assign({}, mockSurveyResultParams(), {
-  id: 'any_id'
-})
+import { mockSaveSurveyResultRepository } from '../../../test'
 
 type SutTypes = {
   sut: DbSaveSurveyResult
