@@ -66,14 +66,17 @@ describe('Survey Mongo Repository', () => {
         date: new Date()
       })
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.answer).toBe(survey.answers[0].answer)
-      expect(surveyResult.id).toBeTruthy()
+      expect(surveyResult.surveyId).toEqual(survey.surveyId)
+      expect(surveyResult.answers[0].count).toBe(1)
+      expect(surveyResult.answers[0].percent).toBe(100)
+      expect(surveyResult.answers[1].count).toBe(0)
+      expect(surveyResult.answers[1].percent).toBe(0)
     })
     test('Should update a survey result if its not new', async () => {
       const sut = makeSut()
       const survey = await makeSurvey()
       const account = await makeAccount()
-      const res = await surveyResultCollection.insertOne({
+      await surveyResultCollection.insertOne({
         surveyId: survey.id,
         accountId: account.id,
         answer: survey.answers[0].answer,
@@ -86,8 +89,10 @@ describe('Survey Mongo Repository', () => {
         date: new Date()
       })
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.answer).toBe(survey.answers[1].answer)
-      expect(surveyResult.id.toString()).toEqual(res.insertedId.toString())
+      expect(surveyResult.answers[0].count).toBe(0)
+      expect(surveyResult.answers[0].percent).toBe(0)
+      expect(surveyResult.answers[1].count).toBe(1)
+      expect(surveyResult.answers[1].percent).toBe(100)
     })
   })
 })

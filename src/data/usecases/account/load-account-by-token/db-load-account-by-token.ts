@@ -8,7 +8,6 @@ export class DbLoadAccountByToken implements LoadAccountByToken {
 
   async load (accessToken: string, role?: string): Promise<any> {
     let token: string
-    console.log(accessToken)
     try {
       token = await this.decrypter.decrypt(accessToken)
     } catch (error) {
