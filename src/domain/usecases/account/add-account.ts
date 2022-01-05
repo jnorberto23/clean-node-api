@@ -3,6 +3,7 @@ export type AddAccountParams = {
   name: string
   email: string
   password: string
+  role?: string
 }
 export type AddAccount = {
   add: (account: AddAccountParams) => Promise<AccountModel>

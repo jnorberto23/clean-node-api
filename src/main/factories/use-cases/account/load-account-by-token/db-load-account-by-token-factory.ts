@@ -4,9 +4,8 @@ import { DbLoadAccountByToken } from '@/data/usecases/account/load-account-by-to
 import { JwtAdapter } from '@/infra/criptography/jtw-adapter/jwt-adapter'
 import env from '@/main/config/env'
 
-export const makeDbAddLoadAccountByToken = (): LoadAccountByToken => {
-  const secret = env.jwtSecret
-  const jwtAdapter = new JwtAdapter(secret)
+export const makeDbLoadAccountByToken = (): LoadAccountByToken => {
+  const jwtAdapter = new JwtAdapter(env.jwtSecret)
   const accountMongoRepository = new AccountMongoRepository()
   return new DbLoadAccountByToken(jwtAdapter, accountMongoRepository)
 }
