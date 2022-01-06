@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb'
-import { SaveSurveyResultRepository, SurveyResultModel } from '@/data/usecases/survey-result/save-survey-result/db-save-survey-result-protocols'
 import { QueryBuilder } from '../helpers'
 import { MongoHelper } from '../helpers/mongo-helpers'
 import round from 'mongo-round'
+import { SaveSurveyResultRepository } from '../../../../data/protocols/db/survey-result/save-survey-result-repository'
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
-  async save (data: any): Promise<SurveyResultModel> {
+  async save (data: any): Promise<void> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults')
-    const res: any = await surveyResultCollection.findOneAndUpdate({
+    await surveyResultCollection.findOneAndUpdate({
       surveyId: new ObjectId(data.surveyId),
       accountId: new ObjectId(data.accountId)
     }, {
@@ -18,12 +18,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
     }, {
       upsert: true
     })
-    if (res.value) {
-      return res.value && MongoHelper.map(res.value, res.value._id)
-    } else {
-      const survey: any = await surveyResultCollection.findOne({ _id: res.lastErrorObject.upserted })
-      return survey && MongoHelper.map(survey, survey._id)
-    }
   }
 
   async loadBySurveyId (surveyId: string, accountId: string): Promise<any> {

@@ -8,4 +8,5 @@ export interface HttpRequest {
   headers?: any
   params?: any
   accountId?: any
+  accessToken?: any
 }

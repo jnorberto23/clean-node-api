@@ -17,10 +17,12 @@ LoadAccountByTokenRepository {
     return MongoHelper.map(accountData, result.insertedId)
   }
 
-  async loadByEmail (email: string): Promise<AccountModel> {
+  async loadByEmail (email: string): Promise<any> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const account = await accountCollection.findOne({ email })
-    return account && MongoHelper.map(account, account.insertedId)
+    const account = await accountCollection.findOne({
+      email
+    })
+    return account && MongoHelper.map(account, account._id)
   }
 
   async updateAccessToken (id: any, token: string): Promise<void> {
@@ -42,6 +44,6 @@ LoadAccountByTokenRepository {
         role: 'admin'
       }]
     })
-    return account && MongoHelper.map(account, account.insertedId)
+    return account && MongoHelper.map(account, account._id)
   }
 }

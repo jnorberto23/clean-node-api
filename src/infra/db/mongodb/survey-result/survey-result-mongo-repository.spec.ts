@@ -105,7 +105,6 @@ describe('SurveyMongoRepository', () => {
       const sut = makeSut()
       const surveyResult = await sut.loadBySurveyId(survey.id, accountId)
       expect(surveyResult).toBeTruthy()
-      console.log('surva', surveyResult)
       expect(surveyResult.surveyId).toEqual(survey.id)
       expect(surveyResult.answers[0].count).toBe(2)
       expect(surveyResult.answers[0].percent).toBe(100)
@@ -115,7 +114,6 @@ describe('SurveyMongoRepository', () => {
 
     test('Should load survey result 2', async () => {
       const survey = await mockSurvey()
-      console.log('survada mocada', survey)
       const accountId = await mockAccountId()
       const accountId2 = await mockAccountId()
       const accountId3 = await mockAccountId()
@@ -137,7 +135,6 @@ describe('SurveyMongoRepository', () => {
       }])
       const sut = makeSut()
       const surveyResult = await sut.loadBySurveyId(survey.id, accountId2)
-      console.log('survaresultadofinal', surveyResult)
       expect(surveyResult).toBeTruthy()
       expect(surveyResult.surveyId).toEqual(survey.id)
       expect(surveyResult.answers[0].count).toBe(2)
@@ -168,7 +165,6 @@ describe('SurveyMongoRepository', () => {
       const sut = makeSut()
       const surveyResult = await sut.loadBySurveyId(survey.id, accountId3)
       expect(surveyResult).toBeTruthy()
-      console.log('surva3', surveyResult)
       expect(surveyResult.surveyId).toEqual(survey.id)
       expect(surveyResult.answers[0].count).toBe(1)
       expect(surveyResult.answers[0].percent).toBe(50)
