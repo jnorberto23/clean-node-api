@@ -1,3 +1,4 @@
+import { MongoHelper } from '../../../../infra/db/mongodb/helpers'
 import {
   AuthenticationParams,
   HashComparer,
