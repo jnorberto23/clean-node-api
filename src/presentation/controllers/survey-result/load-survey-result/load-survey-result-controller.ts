@@ -1,3 +1,4 @@
+import { LoadSurveyResult } from '../../../../domain/usecases/surveyResult/load-survey-result'
 import {
   Controller,
   HttpRequest,
@@ -9,13 +10,19 @@ import {
 } from './load-survey-result-protocols-controller'
 
 export class LoadSurveyResultController implements Controller {
-  constructor (private readonly loadSurveyById: LoadSurveyById) {}
+  constructor (
+    private readonly loadSurveyById: LoadSurveyById,
+    private readonly loadSurveyResult: LoadSurveyResult
+  ) {}
+
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const survey = await this.loadSurveyById.loadById(httpRequest.params.surveyId)
+      const { surveyId } = httpRequest.params
+      const survey = await this.loadSurveyById.loadById(surveyId)
       if (!survey) {
         return forbidden(new InvalidParamError('surveyId'))
       }
+      await this.loadSurveyResult.load(surveyId)
       return await Promise.resolve(null)
     } catch (error) {
       return serverError(error)
