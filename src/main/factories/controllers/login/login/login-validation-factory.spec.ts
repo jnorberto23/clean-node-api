@@ -6,12 +6,12 @@ import { EmailValidator } from '@/presentation/protocols/email-validator'
 jest.mock('@/validation/validators/validation-composite')
 
 const makeEmailValidator = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
+  class EmailValidatorSpy implements EmailValidator {
     isValid (email: string): boolean {
       return true
     }
   }
-  return new EmailValidatorStub()
+  return new EmailValidatorSpy()
 }
 describe('LoginValidation Factory', () => {
   test('should call ValidationComposite with all validations', () => {

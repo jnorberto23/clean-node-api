@@ -6,35 +6,35 @@ import { SaveSurveyResult, SaveSurveyResultParams, SurveyResultModel } from '../
 import { LoadSurveyResult } from '../../domain/usecases/surveyResult/load-survey-result'
 
 export const mockAddSurvey = (): AddSurvey => {
-  class AddSurveyStub implements AddSurvey {
+  class AddSurveySpy implements AddSurvey {
     async add (data?: AddSurveyParams): Promise<void> {
       return await Promise.resolve()
     }
   }
-  return new AddSurveyStub()
+  return new AddSurveySpy()
 }
 export const makeLoadSurveys = (): LoadSurveys => {
-  class LoadSurveysStub implements LoadSurveys {
+  class LoadSurveysSpy implements LoadSurveys {
     async load (): Promise<SurveyModel[]> {
       return await Promise.resolve(mockSurveyModels())
     }
   }
-  return new LoadSurveysStub()
+  return new LoadSurveysSpy()
 }
 export const mockSaveSurveyResult = (): SaveSurveyResult => {
-  class SaveSurveyResultStub implements SaveSurveyResult {
+  class SaveSurveyResultSpy implements SaveSurveyResult {
     async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
       return await Promise.resolve(mockSurveyResultModel())
     }
   }
-  return new SaveSurveyResultStub()
+  return new SaveSurveyResultSpy()
 }
 
 export const mockLoadSurveyResult = (): LoadSurveyResult => {
-  class LoadSurveyResultStub implements LoadSurveyResult {
+  class LoadSurveyResultSpy implements LoadSurveyResult {
     async load (surveyId: string): Promise<SurveyResultModel> {
       return await Promise.resolve(mockSurveyResultModel())
     }
   }
-  return new LoadSurveyResultStub()
+  return new LoadSurveyResultSpy()
 }

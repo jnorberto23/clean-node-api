@@ -4,28 +4,42 @@ import { Authentication, AuthenticationParams } from '@/domain/usecases/account/
 import { LoadAccountByToken } from '@/presentation/middlewares/auth-protocols-middleware'
 
 export const mockAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
+  class AddAccountSpy implements AddAccount {
     async add (account: AddAccountParams): Promise<AccountModel> {
       return await Promise.resolve(mockAccountModel())
     }
   }
-  return new AddAccountStub()
+  return new AddAccountSpy()
 }
 
 export const mockAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
+  class AuthenticationSpy implements Authentication {
     async auth (authentication: AuthenticationParams): Promise<string> {
       return await Promise.resolve('any_token')
     }
   }
-  return new AuthenticationStub()
+  return new AuthenticationSpy()
 }
 
 export const mockLoadAccountByToken = (): LoadAccountByToken => {
-  class LoadAccountByTokenStub implements LoadAccountByToken {
+  class LoadAccountByTokenSpy implements LoadAccountByToken {
     async load (accessToken: string, role?: string): Promise<AccountModel> {
       return await Promise.resolve(mockAccountModel())
     }
   }
-  return new LoadAccountByTokenStub()
+  return new LoadAccountByTokenSpy()
+}
+
+export class LoadAccountByTokenSpy implements LoadAccountByToken {
+  accessToken: string
+  role: string
+  result = {
+    id: 'any_id'
+  }
+
+  async load (accessToken: string, role?: string): Promise<any> {
+    this.accessToken = accessToken
+    this.role = role
+    return this.result
+  }
 }
