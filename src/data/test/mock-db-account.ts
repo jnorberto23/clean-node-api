@@ -5,37 +5,37 @@ import { LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-a
 import { UpdateAccessTokenRepository } from '@/data/protocols/db/account/update-access-token-repository'
 
 export const mockAccountRepository = (): AddAccountRepository => {
-  class AddAccountRepositoryStub implements AddAccountRepository {
+  class AddAccountRepositorySpy implements AddAccountRepository {
     async add (accountData: AddAccountParams): Promise<AccountModel> {
       return await Promise.resolve(mockAccountModel())
     }
   }
-  return new AddAccountRepositoryStub()
+  return new AddAccountRepositorySpy()
 }
 
 export const mockLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
-  class LoadAcountByEmailRepositoryStub implements LoadAccountByEmailRepository {
+  class LoadAcountByEmailRepositorySpy implements LoadAccountByEmailRepository {
     async loadByEmail (email: string): Promise<AccountModel> {
       return await Promise.resolve(null)
     }
   }
-  return new LoadAcountByEmailRepositoryStub()
+  return new LoadAcountByEmailRepositorySpy()
 }
 
 export const mockLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
-  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
+  class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
     async loadByToken (token: string, role?: string): Promise<AccountModel> {
       return await Promise.resolve(mockAccountModel())
     }
   }
-  return new LoadAccountByTokenRepositoryStub()
+  return new LoadAccountByTokenRepositorySpy()
 }
 
 export const mockUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
-  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
+  class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenRepository {
     async updateAccessToken (id: string, token: string): Promise<void> {
       return await Promise.resolve()
     }
   }
-  return new UpdateAccessTokenRepositoryStub()
+  return new UpdateAccessTokenRepositorySpy()
 }

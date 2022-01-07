@@ -4,64 +4,64 @@ import { SurveyResultModel, LoadSurveyByIdRepository, SurveyModel, LoadSurveyRes
 
 type SutTypes = {
   sut: DbLoadSurveyResult
-  loadSurveyResultRepositoryStub: LoadSurveyResultRepository
-  loadSurveyByIdRepositoryStub: LoadSurveyByIdRepository
+  loadSurveyResultRepositorySpy: LoadSurveyResultRepository
+  loadSurveyByIdRepositorySpy: LoadSurveyByIdRepository
 }
 
 const makeSurveyModel = mockSurveyModel()
 const makeSurveyResultModel = { ...mockSurveyResultModel(), surveyId: makeSurveyModel.id }
 
-const makeLoadSurveyResultRepositoryStub = (): LoadSurveyResultRepository => {
-  class LoadSurveyResultRepositoryStub implements LoadSurveyResultRepository {
+const makeLoadSurveyResultRepositorySpy = (): LoadSurveyResultRepository => {
+  class LoadSurveyResultRepositorySpy implements LoadSurveyResultRepository {
     async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
       return makeSurveyResultModel
     }
   }
 
-  return new LoadSurveyResultRepositoryStub()
+  return new LoadSurveyResultRepositorySpy()
 }
 
-const makeLoadSurveyByIdRepositoryStub = (): LoadSurveyByIdRepository => {
-  class LoadSurveyResultRepositoryStub implements LoadSurveyByIdRepository {
+const makeLoadSurveyByIdRepositorySpy = (): LoadSurveyByIdRepository => {
+  class LoadSurveyResultRepositorySpy implements LoadSurveyByIdRepository {
     async loadById (id: string): Promise<SurveyModel> {
       return makeSurveyModel
     }
   }
 
-  return new LoadSurveyResultRepositoryStub()
+  return new LoadSurveyResultRepositorySpy()
 }
 
 const makeSut = (): SutTypes => {
-  const loadSurveyResultRepositoryStub = makeLoadSurveyResultRepositoryStub()
-  const loadSurveyByIdRepositoryStub = makeLoadSurveyByIdRepositoryStub()
-  const sut = new DbLoadSurveyResult(loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub)
+  const loadSurveyResultRepositorySpy = makeLoadSurveyResultRepositorySpy()
+  const loadSurveyByIdRepositorySpy = makeLoadSurveyByIdRepositorySpy()
+  const sut = new DbLoadSurveyResult(loadSurveyResultRepositorySpy, loadSurveyByIdRepositorySpy)
 
   return {
     sut,
-    loadSurveyResultRepositoryStub,
-    loadSurveyByIdRepositoryStub
+    loadSurveyResultRepositorySpy,
+    loadSurveyByIdRepositorySpy
   }
 }
 
 describe('DbLoadSurveyResult UseCase', () => {
   test('Should call LoadSurveyResultRepository with correct values', async () => {
-    const { sut, loadSurveyResultRepositoryStub } = makeSut()
-    const loadSpy = jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
+    const { sut, loadSurveyResultRepositorySpy } = makeSut()
+    const loadSpy = jest.spyOn(loadSurveyResultRepositorySpy, 'loadBySurveyId')
     await sut.load(makeSurveyResultModel.surveyId)
     expect(loadSpy).toHaveBeenCalledWith('any_id')
   })
 
   test('Should throw if LoadSurveyResultRepository throws', async () => {
-    const { sut, loadSurveyResultRepositoryStub } = makeSut()
-    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockRejectedValueOnce(new Error())
+    const { sut, loadSurveyResultRepositorySpy } = makeSut()
+    jest.spyOn(loadSurveyResultRepositorySpy, 'loadBySurveyId').mockRejectedValueOnce(new Error())
     const promise = sut.load('makeSurveyResultModel.surveyId')
     await expect(promise).rejects.toThrow()
   })
 
   test('Should call LoadSurveyByIdRepository if LoadSurveyResultRepository returns null', async () => {
-    const { sut, loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub } = makeSut()
-    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockResolvedValueOnce(null)
-    const loadByIdSpy = jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById')
+    const { sut, loadSurveyResultRepositorySpy, loadSurveyByIdRepositorySpy } = makeSut()
+    jest.spyOn(loadSurveyResultRepositorySpy, 'loadBySurveyId').mockResolvedValueOnce(null)
+    const loadByIdSpy = jest.spyOn(loadSurveyByIdRepositorySpy, 'loadById')
     await sut.load(makeSurveyResultModel.surveyId)
     expect(loadByIdSpy).toHaveBeenCalledWith(makeSurveyResultModel.surveyId)
   })
