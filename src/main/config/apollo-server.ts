@@ -1,13 +1,13 @@
 import { ApolloServer } from 'apollo-server-express'
-import { Express } from 'express'
 import resolvers from '../graphql/resolvers'
 import typeDefs from '../graphql/typeDefs'
+import { authDirectiveTransformer } from '../graphql/diretives'
+import { makeExecutableSchema } from 'graphql-tools'
 
-export default async (app: Express): Promise<void> => {
-  const server = new ApolloServer({
-    resolvers,
-    typeDefs
-  })
-  await server.start()
-  server.applyMiddleware({ app })
-}
+let schema = makeExecutableSchema({ resolvers, typeDefs })
+schema = authDirectiveTransformer(schema)
+
+export const setupApolloServer = (): ApolloServer => new ApolloServer({
+  schema,
+  context: ({ req }) => ({ req })
+})

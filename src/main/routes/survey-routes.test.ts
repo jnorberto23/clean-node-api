@@ -3,12 +3,20 @@ import { Collection } from 'mongodb'
 import env from '../config/env'
 import request from 'supertest'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helpers'
-import app from '../config/app'
+
+import { Express } from 'express'
+import { setupApp } from '../config/app'
+
+let app: Express
 
 let surveyCollection: Collection
 let accountCollection: Collection
 
 describe('Survey Routes', () => {
+  beforeAll(async () => {
+    app = await setupApp()
+  })
+
   const makeAccessToken = async (): Promise<string> => {
     const res = await accountCollection.insertOne({
       name: 'any_name',
